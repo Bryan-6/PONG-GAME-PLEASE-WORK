@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ocean Pong</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #5ecbff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: linear-gradient(to bottom, #aeeaff 0%, #5ecbff 60%, #ffe5b4 100%);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      border-radius: 18px;
+    }
+    #ai-btn {
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-family: Arial, sans-serif;
+      background: #1e90ff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #0a254088;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div style="position: absolute; top: 32px; width: 100vw; text-align: center; z-index: 2; pointer-events: none;">
+    <h1 style="color: #b3e6ff; font-family: 'Arial Black', Arial, sans-serif; letter-spacing: 2px; text-shadow: 0 2px 12px #0a2540; margin: 0; font-size: 2.5rem;">Ocean Pong</h1>
+  </div>
+  <canvas id="pong" width="800" height="520"></canvas>
+  <div style="position: fixed; left: 0; bottom: 0; width: 100vw; height: 80px; z-index: 1; pointer-events: none;">
+    <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none" style="display:block;">
+      <path d="M0,8 Q10,10 20,8 T40,8 T60,10 T80,8 T100,8 V10 H0 Z" fill="#ffe5b4" stroke="#e6cfa7" stroke-width="0.2"/>
+    </svg>
+  </div>
+  <div style="position: absolute; right: 40px; top: 120px; z-index: 3; display: flex; flex-direction: column; align-items: flex-end;">
+    <button id="ai-btn">Play Against AI</button>
+  </div>
+  <script src="pong.js"></script>
+  <script>
+    // Draw sand at the bottom of the canvas
+    const canvas = document.getElementById('pong');
+    const ctx = canvas.getContext('2d');
+    function drawSand() {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height - 60);
+      for (let x = 0; x <= canvas.width; x += 40) {
+        ctx.lineTo(x, canvas.height - 60 + Math.sin(x / 40) * 10 + 10);
+      }
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.lineTo(0, canvas.height);
+      ctx.closePath();
+      ctx.fillStyle = '#ffe5b4';
+      ctx.shadowColor = '#e6cfa7';
+      ctx.shadowBlur = 12;
+      ctx.fill();
+      ctx.restore();
+    }
+    // Patch the draw function to add sand after everything else
+    const origDraw = window.draw;
+    window.draw = function(t) {
+      origDraw(t);
+      drawSand();
+    };
+  </script>
+</body>
+</html>
